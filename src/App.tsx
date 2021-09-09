@@ -8,7 +8,7 @@ import {Menu} from "@material-ui/icons";
 
 export type FilterValuesType = 'all' | 'completed' | 'active';
 
-type TodolistType = {
+export type TodolistType = {
     id: string,
     title: string,
     filter: FilterValuesType
@@ -58,7 +58,6 @@ function App() {
         tasks[todoListId] = tasks[todoListId].map(t => t.id === id ? {...t, isDone: isDone} : t)
         setTasks({...tasks})
     }
-
     function changeFilter(filter: FilterValuesType, todoListId: string) {
         setTodoLists(todoLists.map(tL => tL.id === todoListId ? {...tL, filter: filter} : tL))
     }
