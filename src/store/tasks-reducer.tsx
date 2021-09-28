@@ -1,7 +1,7 @@
 import React from "react";
-import {TaskStateType} from "../App";
+import {TaskStateType} from "../AppWithRedux";
 import {v1} from "uuid";
-import {AddTodoListAT, RemoveTodoListAT} from "./todolist-reducer";
+import {AddTodoListAT, RemoveTodoListAT, todoListId_1, todoListId_2} from "./todolist-reducer";
 
 type RemoveTaskAT = {
     type: 'REMOVE-TASK'
@@ -29,9 +29,22 @@ type ChangeTaskTitleAT = {
     title: string
 }
 
+const initialState: TaskStateType = {
+    [todoListId_1]: [
+        {id: v1(), title: 'HTML&CSS', isDone: true},
+        {id: v1(), title: 'JS', isDone: true},
+        {id: v1(), title: 'React', isDone: false}
+    ],
+    [todoListId_2]: [
+        {id: v1(), title: 'Beer', isDone: true},
+        {id: v1(), title: 'Fish', isDone: true},
+        {id: v1(), title: 'Meat', isDone: true},
+    ]
+}
+
 type ActionsType = RemoveTaskAT | AddTaskAT | ChangeTaskTitleAT | ChangeTaskStatusAT | AddTodoListAT | RemoveTodoListAT
 
-const tasksReducer = (state: TaskStateType, action: ActionsType): TaskStateType => {
+const tasksReducer = (state: TaskStateType = initialState, action: ActionsType): TaskStateType => {
     switch (action.type) {
         case 'REMOVE-TASK': {
             const stateCopy = {...state}
@@ -61,10 +74,8 @@ const tasksReducer = (state: TaskStateType, action: ActionsType): TaskStateType 
         case 'CHANGE-TASK-STATUS' : {
             const stateCopy = {...state}
             const tasks = stateCopy[action.todoListId]
-            let task = tasks.find(t => t.id === action.taskId)
-            if (task) {
-                task.isDone = action.isDone
-            }
+            stateCopy[action.todoListId] = tasks.map(t => t.id === action.taskId ? {...t, isDone: action.isDone} : t)
+
             return stateCopy
         }
 
@@ -112,10 +123,10 @@ export const changeTaskTitleAC = (taskId: string, title: string, todoListId: str
     title
 })
 
-export const AddTodolistAC = (id: string, title: string): AddTodoListAT => ({
+export const AddTodolistAC = (title: string): AddTodoListAT => ({
     type: 'ADD-TODOLIST',
     title,
-    id
+    id: v1()
 })
 
 export const RemoveTodolistAC = (todoListId: string): RemoveTodoListAT => ({
