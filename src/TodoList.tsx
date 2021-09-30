@@ -1,4 +1,4 @@
-import React, {ChangeEvent} from "react";
+import React, {ChangeEvent, useCallback} from "react";
 import {FilterValuesType} from "./AppWithRedux";
 import AddItemForm from "./AddItemForm";
 import EditableSpan from "./EditableSpan";
@@ -23,32 +23,39 @@ export type TaskType = {
     isDone: boolean
 }
 
-function TodoList(props: TodolistPropsType) {
+export const TodoList = React.memo((props: TodolistPropsType) => {
 
     const tasks = useSelector<AppRootState, Array<TaskType>>(state => state.tasks[props.id])
     const dispatch = useDispatch()
 
-    const setAllFilterValue = () => {
-        props.changeFilter('all', props.id)
-    }
-    const setActiveFilterValue = () => {
-        props.changeFilter('active', props.id)
-    }
-    const setCompletedFilterValue = () => {
-        props.changeFilter('completed', props.id)
-    }
-    const removeTodoList = () => props.removeTodoList(props.id)
-    const changeTodoListTitle = (title: string) => {
-        props.changeTodoListTitle(title, props.id)
-    }
+    const addTask = useCallback((title: string) => {
+        dispatch(addTaskAC(title, props.id))
+    }, [dispatch, props.id])
 
-        let tasksForTodoList = tasks
-        if (props.filter === 'completed') {
-            tasksForTodoList = tasks.filter(t => t.isDone === true);
-        }
-        if (props.filter === 'active') {
-            tasksForTodoList = tasks.filter(t => t.isDone === false);
-        }
+    const removeTodoList = () => props.removeTodoList(props.id)
+
+    const changeTodoListTitle = useCallback((title: string) => {
+        props.changeTodoListTitle(title, props.id)
+    }, [props.changeTodoListTitle, props.id])
+
+    const setAllFilterValue = useCallback(() => {
+        props.changeFilter('all', props.id)
+    }, [props.changeFilter, props.id])
+    const setActiveFilterValue = useCallback(() => {
+        props.changeFilter('active', props.id)
+    }, [props.changeFilter, props.id])
+    const setCompletedFilterValue = useCallback(() => {
+        props.changeFilter('completed', props.id)
+    }, [props.changeFilter, props.id])
+
+    let tasksForTodoList = tasks
+
+    if (props.filter === 'completed') {
+        tasksForTodoList = tasks.filter(t => t.isDone === true);
+    }
+    if (props.filter === 'active') {
+        tasksForTodoList = tasks.filter(t => t.isDone === false);
+    }
     return (
         <div>
             <div>
@@ -60,9 +67,7 @@ function TodoList(props: TodolistPropsType) {
                         <Delete/>
                     </IconButton>
                 </h3>
-                <AddItemForm addItem={(title) => {
-                    dispatch(addTaskAC(title, props.id))
-                }}/>
+                <AddItemForm addItem={addTask}/>
 
                 <ul style={{
                     listStyle: 'none',
@@ -80,7 +85,8 @@ function TodoList(props: TodolistPropsType) {
                                     checked={t.isDone}
                                     onChange={(e: ChangeEvent<HTMLInputElement>) => {
                                         let newIsDoneValue = e.currentTarget.checked
-                                        dispatch(changeTaskStatusAC(t.id, newIsDoneValue, props.id))}
+                                        dispatch(changeTaskStatusAC(t.id, newIsDoneValue, props.id))
+                                    }
                                     }
                                 />
                                 <EditableSpan
@@ -121,6 +127,7 @@ function TodoList(props: TodolistPropsType) {
             </div>
         </div>
     )
-}
+})
 
 export default TodoList;
+
