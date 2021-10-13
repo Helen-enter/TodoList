@@ -1,4 +1,5 @@
 import React from "react";
+// @ts-ignore
 import {TaskStateType, TodolistType} from "../App";
 import {addTodoListAC} from "./todolist-reducer";
 import tasksReducer from "./tasks-reducer";

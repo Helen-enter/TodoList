@@ -8,9 +8,9 @@ const rootReducer = combineReducers({
     tasks: tasksReducer
 })
 
-export type AppRootState = ReturnType<typeof rootReducer>
-
 export const store = createStore(rootReducer)
+
+export type AppRootState = ReturnType<typeof rootReducer>
 
 // @ts-ignore
 window.store = store;
