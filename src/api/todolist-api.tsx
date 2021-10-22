@@ -39,7 +39,7 @@ type CommonResponseType<T> = {
     data: T
 }
 
-type TodoType = {
+export type TodoType = {
     id: string
     title: string
     addedDate: string

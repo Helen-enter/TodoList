@@ -1,6 +1,9 @@
 import React from "react";
 import {FilterValuesType, TodolistType} from "../AppWithRedux";
 import {v1} from "uuid";
+import {todolistApi, TodoType} from "../api/todolist-api";
+import {Dispatch} from "redux";
+import {AppRootState} from "./store";
 
 export type RemoveTodoListAT = {
     type: 'REMOVE-TODOLIST'
@@ -33,7 +36,7 @@ const initialState: Array<TodolistType> = [
     {id: todoListId_2, title: 'What to buy', filter: 'all'}
 ]
 
-type ActionsType = RemoveTodoListAT | AddTodoListAT | ChangeTodoListTitleAT | ChangeTodoListFilterAT
+type ActionsType = RemoveTodoListAT | AddTodoListAT | ChangeTodoListTitleAT | ChangeTodoListFilterAT | SetTodosActionType
 
 const todolistsReducer = (todoLists: Array<TodolistType> = initialState, action: ActionsType): Array<TodolistType> => {
     switch (action.type) {
@@ -47,6 +50,10 @@ const todolistsReducer = (todoLists: Array<TodolistType> = initialState, action:
             return todoLists.map(tL => tL.id === action.todoListId ? {...tL, title: action.title} : tL)
         case 'CHANGE-TODOLIST-FILTER':
             return todoLists.map(tL => tL.id === action.todoListId ? {...tL, filter: action.filter} : tL)
+        case "SET-TODOS":
+            return action.todos.map(tl => {
+                return {...tl, filter: 'all'}
+            })
         default:
             return todoLists;
     }
@@ -77,3 +84,20 @@ export const changeTodoListFilterAC = (filter: FilterValuesType, todoListId: str
     filter,
     todoListId
 })
+
+export const setTodosAC = (todos: Array<TodoType>) => {
+    return {
+        type: 'SET-TODOS',
+        todos
+    } as const
+}
+
+export type SetTodosActionType = ReturnType<typeof setTodosAC>
+
+export const setTodosThunk = (dispatch: Dispatch, getState: () => AppRootState): void => {
+    todolistApi.getTodo()
+        .then((res)=>{
+            let todos = res.data
+            dispatch(setTodosAC(todos))
+        })
+}

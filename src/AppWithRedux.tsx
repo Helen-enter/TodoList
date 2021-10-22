@@ -1,4 +1,4 @@
-import React, {useCallback} from 'react';
+import React, {useCallback, useEffect} from 'react';
 import './App.css';
 import TodoList, {TaskType} from "./TodoList";
 import AddItemForm from "./AddItemForm";
@@ -8,10 +8,11 @@ import {
     addTodoListAC,
     changeTodoListFilterAC,
     changeTodoListTitleAC,
-    removeTodoListAC
+    removeTodoListAC, setTodosAC, setTodosThunk
 } from "./store/todolist-reducer";
 import {useDispatch, useSelector} from "react-redux";
 import {AppRootState} from "./store/store";
+import {todolistApi} from "./api/todolist-api";
 
 export type FilterValuesType = 'all' | 'completed' | 'active';
 
@@ -26,6 +27,11 @@ export type TaskStateType = {
 }
 
 function AppWithRedux() {
+
+    useEffect(() =>{
+       dispatch(setTodosThunk)
+    },[])
+
     const dispatch = useDispatch()
     const todoLists = useSelector<AppRootState, Array<TodolistType>>(state => state.todoLists)
 

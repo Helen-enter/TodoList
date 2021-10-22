@@ -1,7 +1,9 @@
 import React from "react";
 import {TaskStateType} from "../AppWithRedux";
 import {v1} from "uuid";
-import {AddTodoListAT, RemoveTodoListAT, todoListId_1, todoListId_2} from "./todolist-reducer";
+import {AddTodoListAT, RemoveTodoListAT, SetTodosActionType, todoListId_1, todoListId_2} from "./todolist-reducer";
+import {Dispatch} from "redux";
+import {todolistApi} from "../api/todolist-api";
 
 type RemoveTaskAT = {
     type: 'REMOVE-TASK'
@@ -30,7 +32,10 @@ type ChangeTaskTitleAT = {
 }
 
 const initialState: TaskStateType = {
-    [todoListId_1]: [
+    [todoListId_1]: [],
+    [todoListId_2]: []
+
+  /*  [todoListId_1]: [
         {id: v1(), title: 'HTML&CSS', isDone: true},
         {id: v1(), title: 'JS', isDone: true},
         {id: v1(), title: 'React', isDone: false}
@@ -39,10 +44,10 @@ const initialState: TaskStateType = {
         {id: v1(), title: 'Beer', isDone: true},
         {id: v1(), title: 'Fish', isDone: true},
         {id: v1(), title: 'Meat', isDone: true},
-    ]
+    ]*/
 }
 
-type ActionsType = RemoveTaskAT | AddTaskAT | ChangeTaskTitleAT | ChangeTaskStatusAT | AddTodoListAT | RemoveTodoListAT
+type ActionsType = RemoveTaskAT | AddTaskAT | ChangeTaskTitleAT | ChangeTaskStatusAT | AddTodoListAT | RemoveTodoListAT |SetTodosActionType
 
 const tasksReducer = (state: TaskStateType = initialState, action: ActionsType): TaskStateType => {
     switch (action.type) {
@@ -90,6 +95,14 @@ const tasksReducer = (state: TaskStateType = initialState, action: ActionsType):
             delete stateCopy[action.todoListId]
             return stateCopy
         }
+
+        case "SET-TODOS":
+            let copyState = {...state}
+            action.todos.forEach((tl) => {
+                copyState[tl.id] = []
+            })
+            return copyState
+
         default:
             return state;
     }
@@ -134,3 +147,6 @@ export const RemoveTodolistAC = (todoListId: string): RemoveTodoListAT => ({
     todoListId
 })
 
+export const fetchTasksTC = (dispatch: Dispatch) => {
+
+}
