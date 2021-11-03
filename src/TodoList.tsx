@@ -1,12 +1,19 @@
-import React, {ChangeEvent, useCallback} from "react";
+import React, {ChangeEvent, useCallback, useEffect} from "react";
 import {FilterValuesType} from "./AppWithRedux";
 import AddItemForm from "./AddItemForm";
 import EditableSpan from "./EditableSpan";
-import {Button, Checkbox, IconButton} from '@material-ui/core'
-import {Delete} from "@material-ui/icons";
-import {addTaskAC, changeTaskStatusAC, changeTaskTitleAC, removeTaskAC} from "./store/tasks-reducer";
+import {Button, Checkbox, IconButton} from '@mui/material'
+import {Delete} from "@mui/icons-material";
+import {
+    addTaskAC,
+    changeTaskStatusAC,
+    changeTaskTitleAC, createTaskTC,
+    fetchTasksTC,
+    removeTaskAC
+} from "./store/tasks-reducer";
 import {useDispatch, useSelector} from "react-redux";
 import {AppRootState} from "./store/store";
+import {todolistApi} from "./api/todolist-api";
 
 type TodolistPropsType = {
     id: string
@@ -24,12 +31,21 @@ export type TaskType = {
 }
 
 export const TodoList = React.memo((props: TodolistPropsType) => {
-
-    const tasks = useSelector<AppRootState, Array<TaskType>>(state => state.tasks[props.id])
     const dispatch = useDispatch()
 
+    useEffect(()=>{
+        dispatch(fetchTasksTC(props.id))
+    },[])
+
+    const tasks = useSelector<AppRootState, Array<TaskType>>(state => state.tasks[props.id])
+
+   /* const addTask = useCallback((todolistId: string, title: string) => {
+        dispatch(createTaskTC(todolistId, title))
+    }, [])*/
+
+
     const addTask = useCallback((title: string) => {
-        dispatch(addTaskAC(title, props.id))
+         dispatch(addTaskAC(title, props.id))
     }, [dispatch, props.id])
 
     const removeTodoList = () => props.removeTodoList(props.id)
@@ -105,21 +121,21 @@ export const TodoList = React.memo((props: TodolistPropsType) => {
                     <Button
                         size={'small'}
                         variant={'contained'}
-                        color={props.filter === 'all' ? 'secondary' : 'default'}
+                        color={props.filter === 'all' ? 'secondary' : 'inherit'}
                         style={{margin: '0 3px'}}
                         onClick={setAllFilterValue}>All
                     </Button>
                     <Button
                         size={'small'}
                         variant={'contained'}
-                        color={props.filter === 'active' ? 'secondary' : 'default'}
+                        color={props.filter === 'active' ? 'secondary' : 'inherit'}
                         style={{margin: '0 3px'}}
                         onClick={setActiveFilterValue}>Active
                     </Button>
                     <Button
                         size={'small'}
                         variant={'contained'}
-                        color={props.filter === 'completed' ? 'secondary' : 'default'}
+                        color={props.filter === 'completed' ? 'secondary' : 'inherit'}
                         style={{margin: '0 3px'}}
                         onClick={setCompletedFilterValue}>Completed
                     </Button>

@@ -2,17 +2,26 @@ import React, {useCallback, useEffect} from 'react';
 import './App.css';
 import TodoList, {TaskType} from "./TodoList";
 import AddItemForm from "./AddItemForm";
-import {AppBar, Button, Container, Grid, IconButton, Paper, Toolbar, Typography} from "@material-ui/core";
-import {Menu} from "@material-ui/icons";
+import AppBar from '@mui/material/AppBar';
+import Toolbar from '@mui/material/Toolbar';
+import IconButton from '@mui/material/IconButton';
+import Typography from '@mui/material/Typography';
+import Button from '@mui/material/Button';
+import Container from '@mui/material/Container';
+import { Menu } from '@mui/icons-material';
+import Grid from '@mui/material/Grid';
+import Paper from '@mui/material/Paper';
+
 import {
     addTodoListAC,
     changeTodoListFilterAC,
     changeTodoListTitleAC,
-    removeTodoListAC, setTodosAC, setTodosThunk
+    removeTodoListAC, setTodosTC
 } from "./store/todolist-reducer";
 import {useDispatch, useSelector} from "react-redux";
 import {AppRootState} from "./store/store";
-import {todolistApi} from "./api/todolist-api";
+import LinearProgress from '@mui/material/LinearProgress/LinearProgress';
+import ErrorSnackBar from "./components/ErrorSnackBar/ErrorSnackBar";
 
 export type FilterValuesType = 'all' | 'completed' | 'active';
 
@@ -29,7 +38,7 @@ export type TaskStateType = {
 function AppWithRedux() {
 
     useEffect(() =>{
-       dispatch(setTodosThunk)
+       dispatch(setTodosTC())
     },[])
 
     const dispatch = useDispatch()
@@ -75,6 +84,7 @@ function AppWithRedux() {
 
     return (
         <div className="App">
+            <ErrorSnackBar/>
             <AppBar position={'static'}>
                 <Toolbar style={{justifyContent: 'space-between'}}>
                     <IconButton
@@ -91,6 +101,7 @@ function AppWithRedux() {
                         Login
                     </Button>
                 </Toolbar>
+                <LinearProgress/>
             </AppBar>
             <Container fixed>
                 <Grid container style={{padding: '20px 0'}}>
