@@ -3,12 +3,12 @@ import React from "react";
 import {action} from '@storybook/addon-actions';
 // @ts-ignore
 import {ComponentStory, ComponentMeta} from '@storybook/react';
-import Task, {/*TaskPropsType*/} from "./Task";
+import Task from "./Task";
 import {v1} from "uuid";
 import {changeTaskStatusAC, changeTaskTitleAC, removeTaskAC} from "./store/tasks-reducer";
 import {Provider} from "react-redux";
 import {store} from "./store/store";
-//import {TaskType} from "./TodoList";
+import {TaskPriorities, TaskStatuses} from "./api/task-api";
 
 
 export default {
@@ -22,8 +22,16 @@ export default {
 } as ComponentMeta<typeof Task>
 
 type TaskType = {
-    id: string
+    description: string
     title: string
+    status: TaskStatuses
+    priority: TaskPriorities
+    startDate: string
+    deadline: string
+    id: string
+    todoListId: string
+    order: number
+    addedDate: string
     isDone: boolean
 }
 
@@ -32,6 +40,7 @@ type TaskPropsType = {
     id: string
 }
 
+
 const Template: ComponentStory<typeof Task> = (args: TaskPropsType) => <Provider store={store}>
     <Task {...args} />
 </Provider>
@@ -39,12 +48,15 @@ const Template: ComponentStory<typeof Task> = (args: TaskPropsType) => <Provider
 export const TaskIsDoneStories = Template.bind({});
 
 TaskIsDoneStories.args = {
+    // @ts-ignore
     task: {id: v1(), title: 'js', isDone: true},
     id: 'todo1',
 };
 
 export const TaskIsNotDoneStories = Template.bind({});
+
 TaskIsNotDoneStories.args = {
+    // @ts-ignore
     task: {id: v1(), title: 'js', isDone: false},
     id: 'todo1',
 };

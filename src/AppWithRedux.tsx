@@ -1,6 +1,7 @@
 import React, {useCallback, useEffect} from 'react';
 import './App.css';
-import TodoList, {TaskType} from "./TodoList";
+import TodoList from "./TodoList";
+import {TaskType} from "./api/task-api";
 import AddItemForm from "./AddItemForm";
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
@@ -22,6 +23,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {AppRootState} from "./store/store";
 import LinearProgress from '@mui/material/LinearProgress/LinearProgress';
 import ErrorSnackBar from "./components/ErrorSnackBar/ErrorSnackBar";
+import {createTaskTC} from "./store/tasks-reducer";
 
 export type FilterValuesType = 'all' | 'completed' | 'active';
 
@@ -43,6 +45,10 @@ function AppWithRedux() {
 
     const dispatch = useDispatch()
     const todoLists = useSelector<AppRootState, Array<TodolistType>>(state => state.todoLists)
+
+    const addTask = useCallback(function (title: string, todolistId: string) {
+        dispatch(createTaskTC(todolistId, title))
+    }, []);
 
     const changeFilter = useCallback((filter: FilterValuesType, todoListId: string) => {
         const action = changeTodoListFilterAC(filter, todoListId)
@@ -69,6 +75,7 @@ function AppWithRedux() {
             <Grid item key={tL.id}>
                 <Paper elevation={20} style={{padding: '30px'}}>
                     <TodoList
+                        addTask={addTask}
                         key={tL.id}
                         id={tL.id}
                         filter={tL.filter}

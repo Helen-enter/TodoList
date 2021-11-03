@@ -11,7 +11,7 @@ export const GetTasks = () => {
     const [state, setState] = useState<any>(null)
     const todolistId = "21169ffb-a3cb-4795-8e9c-df0b88afeba8"
     useEffect(() => {
-        taskApi.getTask(todolistId)
+        taskApi.getTasks(todolistId)
             .then((res) => {
                 setState(res.data);
             })
@@ -49,7 +49,7 @@ export const UpdateTaskTitle = () => {
     const [state, setState] = useState<any>(null)
     const todolistId = "21169ffb-a3cb-4795-8e9c-df0b88afeba8";
     const taskId = "3c3fe61f-ce68-42c2-8eff-0744cdddbf29"
-    const title = 'Angular'
+    let title = 'Angular'
     useEffect(() => {
         taskApi.updateTask(todolistId, taskId, title)
             .then((res) => {

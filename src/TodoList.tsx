@@ -5,15 +5,14 @@ import EditableSpan from "./EditableSpan";
 import {Button, Checkbox, IconButton} from '@mui/material'
 import {Delete} from "@mui/icons-material";
 import {
-    addTaskAC,
     changeTaskStatusAC,
-    changeTaskTitleAC, createTaskTC,
+    changeTaskTitleAC,
     fetchTasksTC,
     removeTaskAC
 } from "./store/tasks-reducer";
 import {useDispatch, useSelector} from "react-redux";
 import {AppRootState} from "./store/store";
-import {todolistApi} from "./api/todolist-api";
+import {TaskType} from "./api/task-api";
 
 type TodolistPropsType = {
     id: string
@@ -22,12 +21,7 @@ type TodolistPropsType = {
     changeFilter: (value: FilterValuesType, todoListId: string) => void
     removeTodoList: (todoListId: string) => void
     changeTodoListTitle: (title: string, todoListId: string) => void
-}
-
-export type TaskType = {
-    id: string
-    title: string
-    isDone: boolean
+    addTask: (title: string, id: string) => void
 }
 
 export const TodoList = React.memo((props: TodolistPropsType) => {
@@ -43,10 +37,14 @@ export const TodoList = React.memo((props: TodolistPropsType) => {
         dispatch(createTaskTC(todolistId, title))
     }, [])*/
 
-
+/*
     const addTask = useCallback((title: string) => {
          dispatch(addTaskAC(title, props.id))
-    }, [dispatch, props.id])
+    }, [dispatch, props.id])*/
+
+    const addTask = useCallback((title: string) => {
+        props.addTask(title, props.id)
+    }, [props.addTask, props.id])
 
     const removeTodoList = () => props.removeTodoList(props.id)
 
