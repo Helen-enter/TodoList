@@ -1,20 +1,19 @@
-import React, {ChangeEvent, useCallback, useEffect} from "react";
-import {FilterValuesType} from "./AppWithRedux";
+import React, {useCallback, useEffect} from "react";
 import AddItemForm from "./AddItemForm";
 import EditableSpan from "./EditableSpan";
 import {Button, Checkbox, IconButton} from '@mui/material'
 import {Delete} from "@mui/icons-material";
 import {
-    changeTaskStatusAC,
     changeTaskTitleAC,
     fetchTasksTC,
     removeTaskAC
 } from "./store/tasks-reducer";
 import {useDispatch, useSelector} from "react-redux";
 import {AppRootState} from "./store/store";
-import {TaskType} from "./api/task-api";
+import {TaskStatuses, TaskType} from "./api/task-api";
+import {FilterValuesType} from "./store/todolist-reducer";
 
-type TodolistPropsType = {
+export type TodolistPropsType = {
     id: string
     filter: FilterValuesType
     title: string
@@ -27,9 +26,9 @@ type TodolistPropsType = {
 export const TodoList = React.memo((props: TodolistPropsType) => {
     const dispatch = useDispatch()
 
-    useEffect(()=>{
+    useEffect(() => {
         dispatch(fetchTasksTC(props.id))
-    },[])
+    }, [])
 
     const tasks = useSelector<AppRootState, Array<TaskType>>(state => state.tasks[props.id])
 
@@ -56,10 +55,10 @@ export const TodoList = React.memo((props: TodolistPropsType) => {
     let tasksForTodoList = tasks
 
     if (props.filter === 'completed') {
-        tasksForTodoList = tasks.filter(t => t.isDone === true);
+        tasksForTodoList = tasks.filter(t => t.status === TaskStatuses.Completed);
     }
     if (props.filter === 'active') {
-        tasksForTodoList = tasks.filter(t => t.isDone === false);
+        tasksForTodoList = tasks.filter(t => t.status === TaskStatuses.New);
     }
     return (
         <div>
@@ -87,12 +86,6 @@ export const TodoList = React.memo((props: TodolistPropsType) => {
                                 <Checkbox
                                     color={'primary'}
                                     size={'small'}
-                                    checked={t.isDone}
-                                    onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                                        let newIsDoneValue = e.currentTarget.checked
-                                        dispatch(changeTaskStatusAC(t.id, newIsDoneValue, props.id))
-                                    }
-                                    }
                                 />
                                 <EditableSpan
                                     title={t.title}

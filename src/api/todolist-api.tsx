@@ -1,5 +1,6 @@
 import React from "react";
 import axios from "axios";
+import {TodolistType} from "./task-api";
 
 const instance = axios.create({
     baseURL: 'https://social-network.samuraijs.com/api/1.1/',
@@ -12,10 +13,10 @@ const instance = axios.create({
 
 export const todolistApi = {
     getTodo() {
-        return instance.get<Array<TodoType>>('todo-lists',)
+        return instance.get<Array<TodolistType>>('todo-lists',)
     },
     createTodo(title: string) {
-        return instance.post<{title: string},CommonResponseType<{ item: TodoType }>>('todo-lists', {title})
+        return instance.post<{title: string},CommonResponseType<{ item: TodolistType }>>('todo-lists', {title})
     },
     deleteTodo(todolistId: string) {
         return instance.delete<CommonResponseType>(`todo-lists/${todolistId}`)
@@ -30,11 +31,4 @@ type CommonResponseType<T={}> = {
     messages: Array<string>
     fieldsErrors: Array<string>
     data: T
-}
-
-export type TodoType = {
-    id: string
-    title: string
-    addedDate: string
-    order: number
 }

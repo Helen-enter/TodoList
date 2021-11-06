@@ -32,7 +32,6 @@ type TaskType = {
     todoListId: string
     order: number
     addedDate: string
-    isDone: boolean
 }
 
 type TaskPropsType = {
@@ -48,16 +47,16 @@ const Template: ComponentStory<typeof Task> = (args: TaskPropsType) => <Provider
 export const TaskIsDoneStories = Template.bind({});
 
 TaskIsDoneStories.args = {
-    // @ts-ignore
-    task: {id: v1(), title: 'js', isDone: true},
+    task: {id: v1(), title: 'js', status: TaskStatuses.Completed,
+        description: '', priority: 0, startDate: '', deadline: '', todoListId: v1(), order: 0, addedDate: ''},
     id: 'todo1',
 };
 
 export const TaskIsNotDoneStories = Template.bind({});
 
 TaskIsNotDoneStories.args = {
-    // @ts-ignore
-    task: {id: v1(), title: 'js', isDone: false},
+    task: {id: v1(), title: 'js', status: TaskStatuses.New,
+        description: '', priority: 0, startDate: '', deadline: '', todoListId: v1(), order: 0, addedDate: ''},
     id: 'todo1',
 };
 

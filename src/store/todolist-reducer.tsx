@@ -1,50 +1,34 @@
 import React from "react";
-import {FilterValuesType, TodolistType} from "../AppWithRedux";
 import {v1} from "uuid";
-import {todolistApi, TodoType} from "../api/todolist-api";
+import {todolistApi} from "../api/todolist-api";
 import {Dispatch} from "redux";
 import {AppRootState} from "./store";
+import {TodolistType} from "../api/task-api";
 
-export type RemoveTodoListAT = {
-    type: 'REMOVE-TODOLIST'
-    todoListId: string
-}
-
-export type AddTodoListAT = {
-    type: 'ADD-TODOLIST'
-    title: string
-    id: string
-}
-
-export type ChangeTodoListTitleAT = {
-    type: 'CHANGE-TODOLIST-TITLE'
-    title: string
-    todoListId: string
-}
-
-export type ChangeTodoListFilterAT = {
-    type: 'CHANGE-TODOLIST-FILTER'
+export type FilterValuesType = 'all' | 'completed' | 'active';
+export type TodolistDomainType = TodolistType & {
     filter: FilterValuesType
-    todoListId: string
 }
 
 export const todoListId_1 = v1()
 export const todoListId_2 = v1()
 
-const initialState: Array<TodolistType> = [
-    {id: todoListId_1, title: 'What to learn', filter: 'all'},
-    {id: todoListId_2, title: 'What to buy', filter: 'all'}
+const initialState: Array<TodolistDomainType> = [
+    {id: todoListId_1, title: 'What to learn', filter: 'all', addedDate: '', order: 0},
+    {id: todoListId_2, title: 'What to buy', filter: 'all', addedDate: '', order: 0}
 ]
 
-type ActionsType = RemoveTodoListAT | AddTodoListAT | ChangeTodoListTitleAT | ChangeTodoListFilterAT | SetTodosActionType
+type ActionsType = ReturnType<typeof removeTodoListAC> | ReturnType<typeof addTodoListAC>
+    | ReturnType<typeof changeTodoListTitleAC> | ReturnType<typeof changeTodoListFilterAC>
+    | ReturnType<typeof setTodosAC>
 
-const todolistsReducer = (todoLists: Array<TodolistType> = initialState, action: ActionsType): Array<TodolistType> => {
+const todolistsReducer = (todoLists: Array<TodolistDomainType> = initialState, action: ActionsType): Array<TodolistDomainType> => {
     switch (action.type) {
         case 'REMOVE-TODOLIST' :
             return todoLists.filter(tL => tL.id !== action.todoListId)
         case 'ADD-TODOLIST' :
             return [{
-                id: action.id, title: action.title, filter: 'all'
+                id: action.id, title: action.title, filter: 'all', addedDate: '', order: 0
             }, ...todoLists]
         case 'CHANGE-TODOLIST-TITLE':
             return todoLists.map(tL => tL.id === action.todoListId ? {...tL, title: action.title} : tL)
@@ -61,42 +45,40 @@ const todolistsReducer = (todoLists: Array<TodolistType> = initialState, action:
 
 export default todolistsReducer;
 
-export const removeTodoListAC = (todoListId: string): RemoveTodoListAT => ({
+export const removeTodoListAC = (todoListId: string) => ({
     type: 'REMOVE-TODOLIST',
     todoListId: todoListId
-})
+} as const)
 
-export const addTodoListAC = (title: string): AddTodoListAT => ({
+export const addTodoListAC = (title: string) => ({
     type: 'ADD-TODOLIST',
     title,
     id: v1()
-})
+} as const)
 
 
-export const changeTodoListTitleAC = (title: string, todoListId: string): ChangeTodoListTitleAT => ({
+export const changeTodoListTitleAC = (title: string, todoListId: string) => ({
     type: 'CHANGE-TODOLIST-TITLE',
     title,
     todoListId
-})
+} as const)
 
-export const changeTodoListFilterAC = (filter: FilterValuesType, todoListId: string): ChangeTodoListFilterAT => ({
+export const changeTodoListFilterAC = (filter: FilterValuesType, todoListId: string) => ({
     type: 'CHANGE-TODOLIST-FILTER',
     filter,
     todoListId
-})
+} as const)
 
-export const setTodosAC = (todos: Array<TodoType>) => {
+export const setTodosAC = (todos: Array<TodolistType>) => {
     return {
         type: 'SET-TODOS',
         todos
     } as const
 }
 
-export type SetTodosActionType = ReturnType<typeof setTodosAC>
-
 export const setTodosTC = () => (dispatch: Dispatch, getState: () => AppRootState): void => {
     todolistApi.getTodo()
-        .then((res)=>{
+        .then((res) => {
             let todos = res.data
             dispatch(setTodosAC(todos))
         })

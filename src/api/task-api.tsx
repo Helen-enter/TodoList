@@ -24,7 +24,6 @@ export const taskApi = {
     }
 }
 
-// types
 export type TodolistType = {
     id: string
     title: string
@@ -37,7 +36,6 @@ export type ResponseType<D = {}> = {
     fieldsErrors: Array<string>
     data: D
 }
-
 
 export enum TaskStatuses {
     New = 0,
@@ -65,7 +63,6 @@ export type TaskType = {
     todoListId: string
     order: number
     addedDate: string
-    isDone: boolean
 }
 export type UpdateTaskModelType = {
     title: string

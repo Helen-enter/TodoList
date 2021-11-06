@@ -9,29 +9,21 @@ import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
-import { Menu } from '@mui/icons-material';
+import {Menu} from '@mui/icons-material';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
-
 import {
     addTodoListAC,
     changeTodoListFilterAC,
     changeTodoListTitleAC,
-    removeTodoListAC, setTodosTC
+    FilterValuesType,
+    removeTodoListAC, setTodosTC, TodolistDomainType
 } from "./store/todolist-reducer";
 import {useDispatch, useSelector} from "react-redux";
 import {AppRootState} from "./store/store";
 import LinearProgress from '@mui/material/LinearProgress/LinearProgress';
 import ErrorSnackBar from "./components/ErrorSnackBar/ErrorSnackBar";
-import {createTaskTC} from "./store/tasks-reducer";
-
-export type FilterValuesType = 'all' | 'completed' | 'active';
-
-export type TodolistType = {
-    id: string,
-    title: string,
-    filter: FilterValuesType
-}
+import {addTaskAC} from "./store/tasks-reducer";
 
 export type TaskStateType = {
     [key: string]: Array<TaskType>
@@ -39,15 +31,20 @@ export type TaskStateType = {
 
 function AppWithRedux() {
 
-    useEffect(() =>{
-       dispatch(setTodosTC())
-    },[])
+    useEffect(() => {
+        dispatch(setTodosTC())
+    }, [])
 
     const dispatch = useDispatch()
-    const todoLists = useSelector<AppRootState, Array<TodolistType>>(state => state.todoLists)
+    const todoLists = useSelector<AppRootState, Array<TodolistDomainType>>(state => state.todoLists)
+
+    /*const addTask = useCallback(function (title: string, todolistId: string) {
+        dispatch(createTaskTC(todolistId, title))
+    }, []);*/
 
     const addTask = useCallback(function (title: string, todolistId: string) {
-        dispatch(createTaskTC(todolistId, title))
+        const action = addTaskAC(title, todolistId);
+        dispatch(action);
     }, []);
 
     const changeFilter = useCallback((filter: FilterValuesType, todoListId: string) => {
