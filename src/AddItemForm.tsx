@@ -3,7 +3,8 @@ import {IconButton, TextField} from "@mui/material";
 import {AddBox} from "@mui/icons-material";
 
 export type AddItemFormPropsType = {
-    addItem: any//(title: string) => void
+    addItem: (title: string) => void
+    disabled?: boolean
 }
 
 export const AddItemForm = React.memo(function (props: AddItemFormPropsType) {
@@ -39,12 +40,13 @@ export const AddItemForm = React.memo(function (props: AddItemFormPropsType) {
                 helperText={error && 'Title is required!'}
                 label={'Title'}
                 variant={'outlined'}
+                disabled={props.disabled}
             />
-            <IconButton onClick={addItem}>
+            <IconButton onClick={addItem} disabled={props.disabled}>
                 <AddBox/>
             </IconButton>
         </div>
     )
-} )
+})
 
 export default AddItemForm;
