@@ -34,8 +34,8 @@ const todolistsReducer = (todoLists: Array<TodolistDomainType> = initialState, a
             return todoLists.map(tL => tL.id === action.todoListId ? {...tL, title: action.title} : tL)
         case 'CHANGE-TODOLIST-FILTER':
             return todoLists.map(tL => tL.id === action.todoListId ? {...tL, filter: action.filter} : tL)
-        case "SET-TODOS":
-            return action.todos.map(tl => {
+        case "SET-TODOLISTS":
+            return action.todolists.map(tl => {
                 return {...tl, filter: 'all'}
             })
         default:
@@ -69,17 +69,18 @@ export const changeTodoListFilterAC = (filter: FilterValuesType, todoListId: str
     todoListId
 } as const)
 
-export const setTodosAC = (todos: Array<TodolistType>) => {
+export const setTodosAC = (todolists: Array<TodolistType>) => {
     return {
-        type: 'SET-TODOS',
-        todos
+        type: 'SET-TODOLISTS',
+        todolists
     } as const
 }
 
-export const setTodosTC = () => (dispatch: Dispatch, getState: () => AppRootState): void => {
+export const setTodoListsTC = () => (dispatch: Dispatch, getState: () => AppRootState): void => {
     todolistApi.getTodo()
         .then((res) => {
-            let todos = res.data
-            dispatch(setTodosAC(todos))
+            let todoLists = res.data
+            dispatch(setTodosAC(todoLists))
         })
 }
+

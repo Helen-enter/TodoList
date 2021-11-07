@@ -8,8 +8,7 @@ import {
     fetchTasksTC,
     removeTaskAC
 } from "./store/tasks-reducer";
-import {useDispatch, useSelector} from "react-redux";
-import {AppRootState} from "./store/store";
+import {useDispatch} from "react-redux";
 import {TaskStatuses, TaskType} from "./api/task-api";
 import {FilterValuesType} from "./store/todolist-reducer";
 
@@ -21,6 +20,10 @@ export type TodolistPropsType = {
     removeTodoList: (todoListId: string) => void
     changeTodoListTitle: (title: string, todoListId: string) => void
     addTask: (title: string, id: string) => void
+    removeTask: (todolistId: string, taskId: string) => void
+    tasks: Array<TaskType>
+    changeTaskStatus: (id: string, status: TaskStatuses, todolistId: string) => void
+    /* changeTaskTitle: (taskId: string, newTitle: string, todolistId: string) => void*/
 }
 
 export const TodoList = React.memo((props: TodolistPropsType) => {
@@ -30,7 +33,7 @@ export const TodoList = React.memo((props: TodolistPropsType) => {
         dispatch(fetchTasksTC(props.id))
     }, [])
 
-    const tasks = useSelector<AppRootState, Array<TaskType>>(state => state.tasks[props.id])
+    //const tasks = useSelector<AppRootState, Array<TaskType>>(state => state.tasks[props.id])
 
     const addTask = useCallback((title: string) => {
         props.addTask(title, props.id)
@@ -52,13 +55,13 @@ export const TodoList = React.memo((props: TodolistPropsType) => {
         props.changeFilter('completed', props.id)
     }, [props.changeFilter, props.id])
 
-    let tasksForTodoList = tasks
+    let tasksForTodoList = props.tasks
 
     if (props.filter === 'completed') {
-        tasksForTodoList = tasks.filter(t => t.status === TaskStatuses.Completed);
+        tasksForTodoList = props.tasks.filter(t => t.status === TaskStatuses.Completed);
     }
     if (props.filter === 'active') {
-        tasksForTodoList = tasks.filter(t => t.status === TaskStatuses.New);
+        tasksForTodoList = props.tasks.filter(t => t.status === TaskStatuses.New);
     }
     return (
         <div>
@@ -82,6 +85,8 @@ export const TodoList = React.memo((props: TodolistPropsType) => {
                             const changeTaskTitle = (title: string) => {
                                 dispatch(changeTaskTitleAC(t.id, title, props.id))
                             }
+                            const removeTask = () => dispatch(removeTaskAC(t.id, props.id))
+
                             return <li key={t.id}>
                                 <Checkbox
                                     color={'primary'}
@@ -92,7 +97,7 @@ export const TodoList = React.memo((props: TodolistPropsType) => {
                                     changeTitle={changeTaskTitle}/>
                                 <IconButton
                                     size={'small'}
-                                    onClick={() => dispatch(removeTaskAC(t.id, props.id))}>
+                                    onClick={removeTask}>
                                     <Delete/>
                                 </IconButton>
                             </li>
@@ -126,6 +131,3 @@ export const TodoList = React.memo((props: TodolistPropsType) => {
         </div>
     )
 })
-
-export default TodoList;
-
