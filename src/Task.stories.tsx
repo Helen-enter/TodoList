@@ -5,11 +5,10 @@ import {action} from '@storybook/addon-actions';
 import {ComponentStory, ComponentMeta} from '@storybook/react';
 import Task from "./Task";
 import {v1} from "uuid";
-import {changeTaskStatusAC, changeTaskTitleAC, removeTaskAC} from "./store/tasks-reducer";
+import {removeTaskAC} from "./store/tasks-reducer";
 import {Provider} from "react-redux";
 import {store} from "./store/store";
-import {TaskPriorities, TaskStatuses} from "./api/task-api";
-
+import {TaskPriorities, TaskStatuses } from "./api/todolist-api";
 
 export default {
     title: 'TodoLists/Task',
