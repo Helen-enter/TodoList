@@ -1,5 +1,4 @@
 import { AxiosError } from "axios";
-import React from "react";
 import { Dispatch } from "redux";
 import {TaskPriorities, TaskStatuses, TaskType, todolistsAPI, UpdateTaskModelType} from "../api/todolist-api";
 import { setStatusAC, setErrorAC } from "../app/app-reducer";
@@ -52,7 +51,7 @@ export const tasksReducer = (state: TaskStateType = initialState, action: Action
         case 'REMOVE-TASK': {
             const stateCopy = {...state}
             const tasks = stateCopy[action.todolistId];
-            const newTasks = tasks.filter(t => t.id != action.taskId);
+            const newTasks = tasks.filter(t => t.id !== action.taskId);
             stateCopy[action.todolistId] = newTasks;
             return stateCopy;
         }

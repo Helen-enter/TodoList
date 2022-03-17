@@ -4,32 +4,26 @@ import {AppRootState} from "../../store/store";
 import { combineReducers, createStore } from "redux";
 import { todolistsReducer } from "../../store/todolist-reducer";
 import {tasksReducer} from "../../store/tasks-reducer";
+import {appReducer} from "../../app/app-reducer";
+import {authReducer} from "../../features/auth-reducer";
 
 
 const rootReducer = combineReducers({
     todoLists: todolistsReducer,
-    tasks: tasksReducer
+    tasks: tasksReducer,
+    app: appReducer,
+    auth: authReducer
 })
 
 const initialGlobalState: AppRootState = {
-    tasks: {
-        /*["todolistId1"]: [
-            {id: v1(), title: "HTML&CSS", isDone: true},
-            {id: v1(), title: "JS", isDone: true}
-        ],
-        ["todolistId2"]: [
-            {id: v1(), title: "Milk", isDone: true},
-            {id: v1(), title: "React Book", isDone: true}
-        ]*/
-    },
-    todoLists: [
-    /*    {id: "todolistId1", title: "What to learn", filter: "all"},
-        {id: "todolistId2", title: "What to buy", filter: "all"}*/
-    ] ,
+    tasks: {},
+    todoLists: [] ,
     app: {
         error: null,
-        status: 'idle'
-    }
+        status: 'idle',
+        isInitialized: false
+    },
+    auth: {isLoggedIn: false}
 };
 
 

@@ -8,6 +8,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {AppRootState} from "./store/store";
 import {RequestStatusType} from "./app/app-reducer";
 import {FilterValuesType, TaskStatuses, TaskType} from "./api/todolist-api";
+import {Navigate} from "react-router-dom";
 
 export type TodolistPropsType = {
     id: string
@@ -27,7 +28,12 @@ export type TodolistPropsType = {
 export const TodoList = React.memo((props: TodolistPropsType) => {
     const dispatch = useDispatch()
 
+    const isLoggedIn = useSelector<AppRootState, boolean>(state => state.auth.isLoggedIn)
+
     useEffect(() => {
+        if (!isLoggedIn) {
+            return
+        }
         dispatch(fetchTasksTC(props.id))
     }, [])
 
@@ -61,6 +67,11 @@ export const TodoList = React.memo((props: TodolistPropsType) => {
     if (props.filter === 'active') {
         tasksForTodoList = tasks.filter(t => t.status === TaskStatuses.New);
     }
+
+    if (!isLoggedIn) {
+        return <Navigate to={`/login`}/>
+    }
+
     return (
         <div>
             <div>

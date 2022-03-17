@@ -1,4 +1,3 @@
-import React from "react";
 import {FilterValuesType, todolistsAPI, TodolistType} from "../api/todolist-api";
 import {Dispatch} from "redux";
 import {RequestStatusType, setStatusAC, setErrorAC} from "../app/app-reducer";
@@ -34,7 +33,7 @@ const initialState: Array<TodolistDomainType> = []
 export const todolistsReducer = (state: Array<TodolistDomainType> = initialState, action: ActionsType): Array<TodolistDomainType> => {
     switch (action.type) {
         case 'REMOVE-TODOLIST': {
-            return state.filter(tl => tl.id != action.id)
+            return state.filter(tl => tl.id !== action.id)
         }
         case 'ADD-TODOLIST': {
             const newTodolist: TodolistDomainType = {
